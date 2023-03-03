@@ -60,16 +60,16 @@ void loop()
 bool validateRequest(DynamicJsonDocument request)
 {
 	if (!validateAction(request["action"])) {
-		Serial.write("{\"response\": 1, \"msg\": \"Action not valid\"}\n\r");
+		Serial.write("{\"response\": 1, \"msg\": \"Action not valid\"}\r\n");
 		return false;
 	}
 	if (!validatePin((int)request["pin"])) {
-		Serial.write("{\"response\": 1, \"msg\": \"Pin is not valid\"}\n\r");
+		Serial.write("{\"response\": 1, \"msg\": \"Pin is not valid\"}\r\n");
 		return false;
 	}
 	if (request["action"] == ACTION_SET_MODE) {
 		if (!validateMode((int)request["mode"])) {
-			Serial.write("{\"response\": 1, \"msg\": \"Mode is not valid\"}\n\r");
+			Serial.write("{\"response\": 1, \"msg\": \"Mode is not valid\"}\r\n");
 			return false;
 		}
 	}
@@ -145,13 +145,13 @@ void executeAction(DynamicJsonDocument request)
 {
 	if (request["action"] == ACTION_ON) {
 		turnOnPin((int)request["pin"]);
-		Serial.write("{\"response\": 0, \"msg\": \"Pin was turned on\"}\n\r");
+		Serial.write("{\"response\": 0, \"msg\": \"Pin was turned on\"}\r\n");
 	} else if (request["action"] == ACTION_OFF) {
 		turnOffPin((int)request["pin"]);
-		Serial.write("{\"response\": 0, \"msg\": \"Pin was turned off\"}\n\r");
+		Serial.write("{\"response\": 0, \"msg\": \"Pin was turned off\"}\r\n");
 	} else if (request["action"] == ACTION_SET_MODE) {
 		setPinMode(request["pin"], request["mode"]);
-		Serial.write("{\"response\": 0, \"msg\": \"Pin mode was changed\"}\n\r");
+		Serial.write("{\"response\": 0, \"msg\": \"Pin mode was changed\"}\r\n");
 	} else if (request["action"] == ACTION_SET_MODE) {
 		//coming soon
 	}

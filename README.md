@@ -51,4 +51,4 @@ At this moment only 9 digital pins are supported:
 
 To read data from serial port using ```cat```, first you need to configure the serial port to not echo back the result.
 
-Execute this command to turn of echo mode for serial port ```stty raw -F /dev/ttyUSB0```
+Execute this command to turn of echo mode for serial port ```stty 9600 -F /dev/ttyUSB0 raw -echo```

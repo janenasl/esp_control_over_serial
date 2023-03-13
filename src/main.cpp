@@ -1,27 +1,8 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
+#include "definitions.h"
+#include "validation.h"
 
-//available pins
-#define D0 16
-#define D1 5
-#define D2 4
-#define D3 0
-#define D4 2
-#define D5 14
-#define D6 12
-#define D7 13
-#define D8 15
-
-//available actions
-#define ACTION_ON	"on"
-#define ACTION_OFF	"off"
-#define ACTION_SET_MODE "set_mode"
-#define ACTION_GET	"get"
-
-bool validatePin(int pin);
-bool validateMode(int mode);
-bool validateAction(String action);
-bool validateRequest(DynamicJsonDocument request);
 void executeAction(DynamicJsonDocument request);
 void turnOnPin(int pin);
 void turnOffPin(int pin);
@@ -55,75 +36,6 @@ void loop()
 		// Serial.println("Success");
 		executeAction(request);
 	}
-}
-
-bool validateRequest(DynamicJsonDocument request)
-{
-	if (!validateAction(request["action"])) {
-		Serial.write("{\"response\": 1, \"msg\": \"Action not valid\"}\r\n");
-		return false;
-	}
-	if (!validatePin((int)request["pin"])) {
-		Serial.write("{\"response\": 1, \"msg\": \"Pin is not valid\"}\r\n");
-		return false;
-	}
-	if (request["action"] == ACTION_SET_MODE) {
-		if (!validateMode((int)request["mode"])) {
-			Serial.write("{\"response\": 1, \"msg\": \"Mode is not valid\"}\r\n");
-			return false;
-		}
-	}
-	return true;
-}
-
-bool validateAction(String action)
-{
-	if (action == ACTION_ON || action == ACTION_OFF || action == ACTION_SET_MODE ||
-	    action == ACTION_GET) {
-		return true;
-	}
-	return false;
-}
-
-bool validatePin(int pin)
-{
-	switch (pin) {
-	case D0:
-		return true;
-		break;
-	case D1:
-		return true;
-		break;
-	case D2:
-		return true;
-		break;
-	case D4:
-		return true;
-		break;
-	case D5:
-		return true;
-		break;
-	case D6:
-		return true;
-		break;
-	case D7:
-		return true;
-		break;
-	case D8:
-		return true;
-		break;
-	default:
-		return false;
-		break;
-	}
-}
-
-bool validateMode(int mode)
-{
-	if (mode == (int)OUTPUT || mode == (int)INPUT) {
-		return true;
-	}
-	return false;
 }
 
 void turnOnPin(int pin)

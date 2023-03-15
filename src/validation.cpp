@@ -40,6 +40,9 @@ bool validatePin(int pin)
 	case D2:
 		return true;
 		break;
+	case D3:
+		return true;
+		break;
 	case D4:
 		return true;
 		break;

@@ -22,7 +22,7 @@ bool validateRequest(DynamicJsonDocument request)
 bool validateAction(String action)
 {
 	if (action == ACTION_ON || action == ACTION_OFF || action == ACTION_SET_MODE ||
-	    action == ACTION_GET) {
+	    action == ACTION_DHT || action == ACTION_GET) {
 		return true;
 	}
 	return false;

@@ -15,6 +15,7 @@
 #define ACTION_ON	"on"
 #define ACTION_OFF	"off"
 #define ACTION_SET_MODE "set_mode"
+#define ACTION_DHT	"dht"
 #define ACTION_GET	"get"
 
 #endif

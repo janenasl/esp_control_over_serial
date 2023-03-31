@@ -8,5 +8,9 @@ bool validateRequest(DynamicJsonDocument request);
 bool validateAction(String action);
 bool validatePin(int pin);
 bool validateMode(int mode);
+bool validateReadAction(String action);
+bool validateInputPin(int pin);
+
+
 
 #endif

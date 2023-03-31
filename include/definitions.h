@@ -15,6 +15,10 @@
 #define ACTION_ON	"on"
 #define ACTION_OFF	"off"
 #define ACTION_SET_MODE "set_mode"
+#define ACTION_READ	"read"
 #define ACTION_GET	"get"
+
+//available read types
+#define READ_TYPE_DHT "dht"
 
 #endif

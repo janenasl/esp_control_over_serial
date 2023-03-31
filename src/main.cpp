@@ -2,15 +2,10 @@
 #include <ArduinoJson.h>
 #include "definitions.h"
 #include "validation.h"
-#include "DHT.h"
+#include "action_handler.h"
 
-#define DHTTYPE DHT11 // DHT 11
 
 void executeAction(DynamicJsonDocument request);
-void turnOnPin(int pin);
-void turnOffPin(int pin);
-void setPinMode(int pin, int mode);
-void readPinData(int pin);
 
 void setup()
 {
@@ -44,55 +39,6 @@ void loop()
 	}
 }
 
-void turnOnPin(int pin)
-{
-	digitalWrite(pin, HIGH);
-}
-
-void turnOffPin(int pin)
-{
-	digitalWrite(pin, LOW);
-}
-
-void setPinMode(int pin, int mode)
-{
-	pinMode(pin, mode);
-}
-
-void getPinValue(int pin, char *buffer)
-{
-	uint8_t bit = digitalPinToBitMask(pin);
-	uint8_t port = digitalPinToPort(pin);
-	volatile uint32_t *reg = portModeRegister(port);
-
-	if (*reg & bit)
-	{
-		sprintf(buffer, "{\"response\":1,\"msg\": \"Pin mode is output\"}\r\n");
-		return;
-	}
-
-	sprintf(buffer, "{\"response\":0,\"value\":%d\r\n", digitalRead(pin));
-}
-
-void readDHTData(int pin, char *buffer)
-{
-	DHT dht(pin, DHTTYPE);
-	dht.begin();
-
-	float h = dht.readHumidity();
-	float t = dht.readTemperature();
-
-	if (isnan(h) || isnan(t))
-	{
-		sprintf(buffer, "{\"response\": 1, \"msg\": \"Failed to read from DHT sensor!\"}\r\n");
-		return;
-	}
-
-	// Compute heat index in Celsius (isFahreheit = false)
-	float hic = dht.computeHeatIndex(t, h, false);
-	sprintf(buffer, "{\"response\":0,\"dht\":{\"humidity\":%.2f,\"temperature\":%.2f,\"heat_index\":%.2f}}\r\n", h, t, hic);
-}
-
 void executeAction(DynamicJsonDocument request)
 {
 	if (request["action"] == ACTION_ON)
@@ -112,14 +58,14 @@ void executeAction(DynamicJsonDocument request)
 	}
 	else if (request["action"] == ACTION_GET)
 	{
-		char buffer[50];
-		getPinValue(request["pin"], (char *)&buffer);
-		Serial.write(buffer);
+		char respinse[50];
+		getPinValue(request["pin"], (char *)&respinse);
+		Serial.write(respinse);
 	}
-	else if (request["action"] == ACTION_DHT)
+	else if (request["action"] == ACTION_READ)
 	{
-		char buffer[100];
-		readDHTData(request["pin"], (char *)&buffer);
-		Serial.write(buffer);
+		char respinse[100];
+		readInput(request, (char *)&respinse);
+		Serial.write(respinse);
 	}
 }

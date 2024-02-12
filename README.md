@@ -37,15 +37,15 @@ This command isn't implemented at the moment. It purpose will be to read the dig
 
 ## Supported pins
 At this moment only 9 digital pins are supported:
-* **D0** - gpio16
-* **D1** - gpio5
-* **D2** - gpio4
-* **D3** - gpio0
-* **D4** - gpio2
-* **D5** - gpio14
-* **D6** - gpio12
-* **D7** - gpio13
-* **D8** - gpio15
+* **D0** - 16
+* **D1** - 5
+* **D2** - 4
+* **D3** - 0
+* **D4** - 2
+* **D5** - 14
+* **D6** - 12
+* **D7** - 13
+* **D8** - 15
 
 ## Reading serial from Linux
 

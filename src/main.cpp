@@ -1,70 +1,36 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
+#include "Pin.h"
+#include "Response.h"
 #include "definitions.h"
 #include "validation.h"
+#include "utils.h"
 
-void executeAction(DynamicJsonDocument request);
-void turnOnPin(int pin);
-void turnOffPin(int pin);
-void setPinMode(int pin, int mode);
+Pin pins[TOTAL_PINS];
 
 void setup()
 {
 	Serial.begin(9600);
-	pinMode(D0, OUTPUT);
-	pinMode(D1, OUTPUT);
-	pinMode(D2, OUTPUT);
-	pinMode(D3, OUTPUT);
-	pinMode(D4, OUTPUT);
-	pinMode(D5, OUTPUT);
-	pinMode(D6, OUTPUT);
-	pinMode(D7, OUTPUT);
-	pinMode(D8, OUTPUT);
+	for (int i = 0; i < TOTAL_PINS; ++i) {
+		pins[i] = Pin(pinList[i]);
+	}
 }
 
 void loop()
 {
-	String incomingString = "";
-	DynamicJsonDocument request(1024);
+	int rc	      = 0;
+	Response *res = new Response();
+	DynamicJsonDocument request(512);
 	if (Serial.available() > 0) {
-		incomingString = Serial.readString();
-		deserializeJson(request, incomingString);
-		if (!validateRequest(request)) {
-			// Serial.println("Failed");
-			return;
+		deserializeJson(request, Serial.readString());
+		rc = validateRequest(pins, request);
+		if (!rc) {
+			executeAction(findPin(pins, (int)request["pin"]), request, res);
+		} else {
+			res->setRc(rc);
+			res->setMessage(errorToString(rc));
 		}
-		// Serial.println("Success");
-		executeAction(request);
+		res->sendResponse();
 	}
-}
-
-void turnOnPin(int pin)
-{
-	digitalWrite(pin, HIGH);
-}
-
-void turnOffPin(int pin)
-{
-	digitalWrite(pin, LOW);
-}
-
-void setPinMode(int pin, int mode)
-{
-	pinMode(pin, mode);
-}
-
-void executeAction(DynamicJsonDocument request)
-{
-	if (request["action"] == ACTION_ON) {
-		turnOnPin((int)request["pin"]);
-		Serial.write("{\"response\": 0, \"msg\": \"Pin was turned on\"}\r\n");
-	} else if (request["action"] == ACTION_OFF) {
-		turnOffPin((int)request["pin"]);
-		Serial.write("{\"response\": 0, \"msg\": \"Pin was turned off\"}\r\n");
-	} else if (request["action"] == ACTION_SET_MODE) {
-		setPinMode(request["pin"], request["mode"]);
-		Serial.write("{\"response\": 0, \"msg\": \"Pin mode was changed\"}\r\n");
-	} else if (request["action"] == ACTION_SET_MODE) {
-		//coming soon
-	}
+	delete res;
 }

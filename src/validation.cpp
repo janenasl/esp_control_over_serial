@@ -1,18 +1,39 @@
 #include "validation.h"
 
-bool validateRequest(DynamicJsonDocument request)
+int validateRequest(Pin list[TOTAL_PINS], DynamicJsonDocument request)
 {
 	if (!validateAction(request["action"])) {
-		Serial.write("{\"response\": 1, \"msg\": \"Action not valid\"}\r\n");
-		return false;
+		return ACTION_NOT_VALID;
 	}
-	if (!validatePin((int)request["pin"])) {
-		Serial.write("{\"response\": 1, \"msg\": \"Pin is not valid\"}\r\n");
-		return false;
+	if (!validateActionArgs(request)) {
+		return MISSING_ARGUMENTS;
+	}
+	if (!pinExists(list, (int)request["pin"])) {
+		return PIN_NOT_VALID;
 	}
 	if (request["action"] == ACTION_SET_MODE) {
 		if (!validateMode((int)request["mode"])) {
-			Serial.write("{\"response\": 1, \"msg\": \"Mode is not valid\"}\r\n");
+			return MODE_NOT_VALID;
+		}
+	}
+	return SUCCESS;
+}
+
+bool validateActionArgs(DynamicJsonDocument request)
+{
+	if (request["action"] == ACTION_ON || request["action"] == ACTION_OFF) {
+		if (!request.containsKey("pin")) {
+			return false;
+		}
+	}
+	if (request["action"] == ACTION_SET_MODE) {
+		if (!request.containsKey("pin") || !request.containsKey("mode")) {
+			return false;
+		}
+	}
+	if (request["action"] == ACTION_GET) {
+		if (!request.containsKey("pin") || !request.containsKey("sensor") ||
+		    !request.containsKey("model")) {
 			return false;
 		}
 	}
@@ -26,42 +47,6 @@ bool validateAction(String action)
 		return true;
 	}
 	return false;
-}
-
-bool validatePin(int pin)
-{
-	switch (pin) {
-	case D0:
-		return true;
-		break;
-	case D1:
-		return true;
-		break;
-	case D2:
-		return true;
-		break;
-	case D3:
-		return true;
-		break;
-	case D4:
-		return true;
-		break;
-	case D5:
-		return true;
-		break;
-	case D6:
-		return true;
-		break;
-	case D7:
-		return true;
-		break;
-	case D8:
-		return true;
-		break;
-	default:
-		return false;
-		break;
-	}
 }
 
 bool validateMode(int mode)

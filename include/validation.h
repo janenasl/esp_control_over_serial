@@ -3,10 +3,13 @@
 
 #include <ArduinoJson.h>
 #include "definitions.h"
+#include "utils.h"
 
-bool validateRequest(DynamicJsonDocument request);
+// bool validateRequest(Pin list[TOTAL_PINS], DynamicJsonDocument request);
+int validateRequest(Pin list[TOTAL_PINS], DynamicJsonDocument request);
 bool validateAction(String action);
 bool validatePin(int pin);
 bool validateMode(int mode);
+bool validateActionArgs(DynamicJsonDocument request);
 
 #endif

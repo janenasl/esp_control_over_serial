@@ -35,7 +35,6 @@ void Response::addData(char *label, float value)
 	if (index > -1) {
 		this->data[index] = value;
 	} else {
-		Serial.println(label);
 		strcpy(this->labels[length], label);
 		this->data[length] = value;
 		length++;
